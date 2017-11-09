@@ -28,16 +28,16 @@ The newest challenge is to identify and draw single left and right lanes. My pro
 4. The arrays are passed to polyfit() with a degree of 1, or linear. It is basically a linear regression of all the points in the qualified lines returned by the Hough transform.
 5. Polyfit returns the slope and intercept of the regression. Those coefficients were then used to calculate the x values for each lane's end point. The y-values were the height of the frame and y-coordinate of the top of the mask.
 
+
 ### 2. Identify potential shortcomings with your current pipeline
 
+The pipeline worked quite well with solidWhiteRight.mp4, with minor jitter for the broken-line left lane. For solidYellowLeft.mp4 however, jitter was noticeable and frequent, with some frames departing wildly from the expected result.
 
-One potential shortcoming would be what would happen when ... 
+The arbitrary 25.0° and 50.0° slope windows would present problems if the vehicle was on a relatively sharp curve, or if the vehicle was not aligned in its lane.
 
-Another shortcoming could be ...
+Also another shortcoming would be loss of the drawn lanes if the broken road lines were even shorter, or had low visibility or contrast compared to the road.
 
 
 ### 3. Suggest possible improvements to your pipeline
 
-A possible improvement would be to ...
-
-Another potential improvement could be to ...
+The most important improvement to the pipeline is to include historical metrics. Since the current pipeline only processes individual frames without considering past frames, jitter was quite considerable. A weighted windowing function should be implemented. The polyfit coefficients should be compared and influenced by its past values. A quick solution, without weighting, is to just discard the newly computed coefficients for the current frame if it changed drastically from the previous one. If say the current computation is 20° off from the previous frame which happened only 1/30 seconds before, then that value should be discarded and the previous value substitued for it.
